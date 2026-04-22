@@ -1,3 +1,6 @@
+
+// créé dans le cours, modifié pour le projet, parreil pour le .json
+
 const documentation = {
     "openapi": "3.1.0",
     "info": {

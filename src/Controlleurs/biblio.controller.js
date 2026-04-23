@@ -1,8 +1,34 @@
 
-// import { getLivresFromDb } from '../Models/OperationsBd.js';
-// import {getLivresWithId} from '../Models/OperationsBd.js';
-// import {getLivresListeDb} from '../Models/OperationsBd.js';
-import {getLivresBd, getLivreIdBd} from '../Models/OperationsBd.js';
+import {getLivresBd, getLivreIdBd,
+     deleteLivreBd, createLivreBd} from '../Models/OperationsBd.js';
+
+export const deleteLivre = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const succes = await deleteLivreBd(id);
+        if (succes) {
+            res.status(200).json({ message: "Livre supprimé!" });
+        } else {
+            res.status(404).json({ error: "Livre pas trouvé." });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Erreur lors du delete" });
+    }
+};
+
+export const addLivre = async (req, res) => {
+    const { titre, auteur, biblio_id } = req.body;
+    if (!titre || !biblio_id) {
+        return res.status(400).json({ error: "Le titre et le biblio_id sont requis" });
+    }
+
+    try {
+        const nouveauLivre = await createLivreBd(req.body);
+        res.status(201).json(nouveauLivre);
+    } catch (error) {
+        res.status(500).json({ error: "Erreur lors de l'ajout du livre" });
+    }
+};
 
 // TO DO
 export const getLivreId = async (req, res) => {
@@ -22,38 +48,12 @@ export const getLivreId = async (req, res) => {
     }
 };
 
-// TO DO
 export const getLivres = async (req, res) => {
+    const afficherTout = req.query.tous === 'true';
     try {
-        const livres = await getLivresBd();
-            res.status(200).json({livres});
+        const livres = await getLivresBd(afficherTout);
+        res.status(200).json({ livres });
     } catch (error) {
-        res.status(500).json({ error: "Erreur lors de la récupération" + error });
+        res.status(500).json({ error: "Erreur lors de la récupération" });
     }
 };
-
-// // TO DO
-// export const getLivressListe = async(req, res) => {
-//     const page = parseInt(req.query.page) || 1;
-//     const type = req.query.type || null;
-//         try {
-//         const listePokemon = await getLivressListeDb(page, type);
-//             res.status(200).json({listePokemon});
-//     } catch (error) {
-//         res.status(500).json({ error: "Erreur lors de la récupération" + page + ". " + type});
-//         console.log("DÉBUG ERREUR :", error);
-//     }
-// };
-    
-// // TO DO
-// export const ajoutLivre = (req, res) => {
-//     const newData = req.body;
-//     if(newData.nom && newData.type_primaire &&newData.type_secondaire &&newData.attaque && newData.defense && newData.pv) {
-//     ajoutLivreDb(newData.nom, newData.type_primaire, newData.type_secondaire, newData.attaque, newData.defense, newData.pv);
-//     res.status(200).json(newData);
-//     }
-//     else{
-//         res.send("Erreur, le controlleur a pas valider");
-//         res.status(400).send({ error: "Données de salutation invalides" });
-//     }
-// };

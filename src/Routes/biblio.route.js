@@ -1,27 +1,30 @@
 
 import express from 'express';
 
-// // ajoute ici les nouvelles methodes ou les modifiés (de toi du passé, de rien)
-// import { ajoutLivre, createUser, modifierStatut, modifierLivre } from '../Controlleurs/biblio.controller.js';
+import { getLivres, getLivreId, deleteLivre, addLivre } from '../Controlleurs/biblio.controller.js';
 
-import { getLivres, getLivreId } from '../Controlleurs/biblio.controller.js';
-
-const router = express.Router();    
+const router = express.Router();
 
 router.get('/', (req, res) => {
     res.send("<h1>Route de base de l'API de bibliotheque! (Pour la doc, /docs)</h1>");
 });
 
-// // TO DO (POST probabloement... a checker)
-// router.get('/ajout', ajoutLivre);
-
 router.get("/livres", getLivres);
 router.get("/livres/:id", getLivreId);
 
-// router.get('/statut', modifierStatut);
+// CRUD
+router.post("/livres", addLivre);
+// router.put("/livres/:id", updateLivre);
+// router.patch("/livres/:id/statut", updateStatutLivre);
+router.delete("/livres/:id", deleteLivre);
 
-// router.get('/modifier', modifierLivre);
+// prets
+// router.post("/prets", createPret);
+// router.put("/prets/:id", updatePret);
+// router.delete("/prets/:id", deletePret);
 
-// router.get('/pokemons/:id', getPokemon);
+// users
+// router.post("/bibliotheques", registerBiblio);
+// router.post("/bibliotheques/cle", getApiKey);
 
 export default router;

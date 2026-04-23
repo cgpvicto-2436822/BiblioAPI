@@ -1,5 +1,15 @@
 import pool from '../Config/db_pg.js';
 
+const deleteLivreBd = async (id) => {
+    const requete = `DELETE FROM livres WHERE id = $1 RETURNING *;`;
+    try {
+        const resultat = await pool.query(requete, [id]);
+        return resultat.rowCount > 0; //bool
+    } catch (erreur) {
+        throw erreur;
+    }
+};
+
 const getLivreIdBd = async (id) => {
     const requete = `
         SELECT * FROM livres 
@@ -16,54 +26,27 @@ const getLivreIdBd = async (id) => {
     }
 };
 
-// const getPokemonsListeDb = async (page = 1, type = null) => {
-//     const elementsParPage = 25;
-//     const pageActuelle = Math.max(1, parseInt(page));
-//     const offset = (pageActuelle - 1) * elementsParPage;
+const createLivreBd = async (livre) => {
+    const { biblio_id, titre, auteur, isbn, description } = livre;
+    const requete = `
+        INSERT INTO livres (biblio_id, titre, auteur, isbn, description, statut)
+        VALUES ($1, $2, $3, $4, $5, 'disponible')
+        RETURNING *;`;
     
-//     let requete = `SELECT nom, type_primaire, type_secondaire, pv, attaque, defense FROM pokemon`;
-//     let params = [];
+    const params = [biblio_id, titre, auteur, isbn, description];
+    const resultat = await pool.query(requete, params);
+    return resultat.rows[0];
+};
 
-//     if (type) {
-//         requete += ` WHERE type_primaire = $1 OR type_secondaire = $2`;
-//         params.push(type, type); 
-//     }
-
-//     requete += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-//     params.push(Number(elementsParPage), Number(offset));
-
-//     try {
-//         const resultats = await pool.query(requete, params);
-//         return resultats.rows; 
-//     } catch (erreur) {
-//         console.error(`Erreur SQL [getPokemonsListeDb]: ${erreur.message}`);
-//         throw erreur;
-//     }
-// };
-
-// async function ajoutLivreDb(nom, type_primaire, type_secondaire, attaque, defense, pv) {
-//     const requete = `INSERT INTO pokemon (nom, type_primaire, type_secondaire, attaque, defense, pv) VALUES ($1, $2, $3, $4, $5, $6)`;
-//     const params = [nom, type_primaire, type_secondaire, attaque, defense, pv];
-//     await pool.query(requete, params);
-// }
-
-// async function addUserDb(nom, email, mdp, uuid) {
-//     const requete = `INSERT INTO users (nom, email, mot_de_passe, uuid) VALUES ($1, $2, $3, $4)`;
-//     const params = [nom, email, mdp, uuid];
-//     await pool.query(requete, params);
-// }
-
-const getLivresBd = async () => {
-    const requete = `SELECT nom FROM public.pokemon`;
+const getLivresBd = async (afficherTout) => {
+    let requete = `SELECT id, titre, auteur, statut FROM livres`;
+    if (!afficherTout) {
+        requete += ` WHERE statut = 'disponible'`;
+    }
     try {
         const resultats = await pool.query(requete);
-        // Utilisation de .map pour plus de clarté
-        const liste = resultats.rows.map(row => ({
-            nom: row.nom
-        }));
         
-        console.log("Liste des pokémons récupérés de la BD : OK");
-        return liste;
+        return resultats.rows;
     } 
     catch (erreur) {
         console.error(`Erreur PostgreSQL : ${erreur.message}`);
@@ -73,13 +56,7 @@ const getLivresBd = async () => {
 
 export{
     getLivresBd,
-    getLivreIdBd
+    getLivreIdBd,
+    deleteLivreBd,
+    createLivreBd
 };
-
-// export {
-//     ajoutLivreDb,
-//     getPokemonsFromDb,
-//     getPokemonWithId,
-//     getPokemonsListeDb,
-//     addUserDb
-// };

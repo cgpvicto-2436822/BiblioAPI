@@ -26,7 +26,7 @@ router.delete("/livres/:id", deleteLivre);
 
 // prets
 router.post("/prets", createPret);
-router.put("/prets/:id", terminerPret);
+router.patch("/prets/:id", terminerPret);
 router.delete("/prets/:id", deletePret);
 
 // users

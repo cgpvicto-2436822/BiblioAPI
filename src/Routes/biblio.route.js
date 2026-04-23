@@ -4,6 +4,8 @@ import express from 'express';
 // // ajoute ici les nouvelles methodes ou les modifiés (de toi du passé, de rien)
 // import { ajoutLivre, createUser, modifierStatut, modifierLivre } from '../Controlleurs/biblio.controller.js';
 
+import { getLivres } from '../Controlleurs/biblio.controller';
+
 const router = express.Router();    
 
 router.get('/', (req, res) => {
@@ -13,7 +15,7 @@ router.get('/', (req, res) => {
 // // TO DO (POST probabloement... a checker)
 // router.get('/ajout', ajoutLivre);
 
-// router.get("/livres", );
+router.get("/livres", getLivres);
 
 // router.get('/statut', modifierStatut);
 

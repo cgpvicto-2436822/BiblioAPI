@@ -1,9 +1,9 @@
-// import pool from '../Config/db_pg.js';
+import pool from '../Config/db_pg.js';
 
 // const getPokemonWithId = async (id) => {
 //     const requete = `SELECT nom, type_primaire, type_secondaire, pv, attaque, defense
 //      FROM pokemon
-//       WHERE id = $1`;
+//       WHERE  = $1`;
 //     const params = [id];
 
 //     try {
@@ -52,23 +52,27 @@
 //     await pool.query(requete, params);
 // }
 
-// const getPokemonsFromDb = async () => {
-//     const requete = `SELECT nom FROM public.pokemon`;
-//     try {
-//         const resultats = await pool.query(requete);
-//         // Utilisation de .map pour plus de clarté
-//         const liste = resultats.rows.map(row => ({
-//             nom: row.nom
-//         }));
+const getLivresBd = async () => {
+    const requete = `SELECT nom FROM public.pokemon`;
+    try {
+        const resultats = await pool.query(requete);
+        // Utilisation de .map pour plus de clarté
+        const liste = resultats.rows.map(row => ({
+            nom: row.nom
+        }));
         
-//         console.log("Liste des pokémons récupérés de la BD : OK");
-//         return liste;
-//     } 
-//     catch (erreur) {
-//         console.error(`Erreur PostgreSQL : ${erreur.message}`);
-//         throw erreur;
-//     }
-// };
+        console.log("Liste des pokémons récupérés de la BD : OK");
+        return liste;
+    } 
+    catch (erreur) {
+        console.error(`Erreur PostgreSQL : ${erreur.message}`);
+        throw erreur;
+    }
+};
+
+export{
+    getLivresBd
+};
 
 // export {
 //     ajoutLivreDb,

@@ -2,7 +2,7 @@
 // import { getLivresFromDb } from '../Models/OperationsBd.js';
 // import {getLivresWithId} from '../Models/OperationsBd.js';
 // import {getLivresListeDb} from '../Models/OperationsBd.js';
-// import {ajoutLivreDb, addUserDb} from '../Models/OperationsBd.js';
+import {getLivresBd} from '../Models/OperationsBd.js';
 
 // // TO DO
 // export const getLivre = async (req, res) => {
@@ -22,15 +22,15 @@
 //     }
 // };
 
-// // TO DO
-// export const getLivres = async (req, res) => {
-//     try {
-//         const listePokemon = await getLivressFromDb();
-//             res.status(200).json({listePokemon});
-//     } catch (error) {
-//         res.status(500).json({ error: "Erreur lors de la récupération" + error });
-//     }
-// };
+// TO DO
+export const getLivres = async (req, res) => {
+    try {
+        const livres = await getLivresBd();
+            res.status(200).json({livres});
+    } catch (error) {
+        res.status(500).json({ error: "Erreur lors de la récupération" + error });
+    }
+};
 
 // // TO DO
 // export const getLivressListe = async(req, res) => {

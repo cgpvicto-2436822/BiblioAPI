@@ -154,5 +154,6 @@ export{
     deletePretBd,
     createBiblioBd,
     updateCleApiBd,
-    getCleApiBd
+    getCleApiBd,
+    terminerPretBd
 };

@@ -1,12 +1,9 @@
-
-// créé dans le cours, modifié pour le projet, parreil pour le .json
-
 const documentation = {
     "openapi": "3.1.0",
     "info": {
         "title": "API de Gestion de Bibliothèque",
-        "summary": "Service de gestion de prêts et de livres par bibliothèque",
-        "description": "Cette API permet de gérer les livres, les prêts et les accès via une clé API unique par bibliothèque.",
+        "summary": "Service de gestion de prêts et de livres",
+        "description": "Cette API permet de gérer les livres, les prêts et les accès via une clé API unique.",
         "version": "1.0.0"
     },
     "servers": [
@@ -27,7 +24,7 @@ const documentation = {
     "paths": {
         "/api/bibliotheque/inscription": {
             "post": {
-                "summary": "Ajouter une bibliothèque (responsable)",
+                "summary": "Inscrire une bibliothèque",
                 "tags": ["Authentification"],
                 "requestBody": {
                     "required": true,
@@ -44,9 +41,7 @@ const documentation = {
                         }
                     }
                 },
-                "responses": {
-                    "201": { "description": "Bibliothèque créée, retourne la clé API" }
-                }
+                "responses": { "201": { "description": "Clé API générée" } }
             }
         },
         "/api/bibliotheque/cle": {
@@ -70,22 +65,18 @@ const documentation = {
                         }
                     }
                 },
-                "responses": {
-                    "200": { "description": "Retourne la clé API" }
-                }
+                "responses": { "200": { "description": "Clé API retournée" } }
             }
         },
         "/api/livres": {
             "get": {
-                "summary": "Liste des livres de la bibliothèque",
+                "summary": "Liste des livres",
                 "tags": ["Livres"],
                 "security": [{"ApiKeyAuth": []}],
                 "parameters": [
-                    { "in": "query", "name": "tous", "schema": { "type": "boolean" }, "description": "Afficher aussi les livres empruntés" }
+                    { "in": "query", "name": "tous", "schema": { "type": "boolean" } }
                 ],
-                "responses": {
-                    "200": { "description": "Liste des livres récupérée" }
-                }
+                "responses": { "200": { "description": "Succès" } }
             },
             "post": {
                 "summary": "Ajouter un livre",
@@ -107,65 +98,39 @@ const documentation = {
                         }
                     }
                 },
-                "responses": {
-                    "201": { "description": "Livre ajouté" }
-                }
+                "responses": { "201": { "description": "Livre créé" } }
             }
         },
         "/api/livres/{id}": {
-            "get": {
-                "summary": "Détail d'un livre et ses prêts",
-                "tags": ["Livres"],
-                "security": [{"ApiKeyAuth": []}],
-                "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
-                "responses": {
-                    "200": { "description": "Détails complets du livre" }
-                }
-            },
-            "put": {
-                "summary": "Modifier un livre",
-                "tags": ["Livres"],
-                "security": [{"ApiKeyAuth": []}],
-                "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
-                "responses": {
-                    "200": { "description": "Livre modifié" }
-                }
-            },
-            "delete": {
-                "summary": "Supprimer un livre",
-                "tags": ["Livres"],
-                "security": [{"ApiKeyAuth": []}],
-                "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
-                "responses": {
-                    "204": { "description": "Livre supprimé" }
-                }
-            }
+            "get": { "summary": "Détails livre", "tags": ["Livres"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "OK" } } },
+            "put": { "summary": "Modifier livre", "tags": ["Livres"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Modifié" } } },
+            "delete": { "summary": "Supprimer livre", "tags": ["Livres"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "204": { "description": "Supprimé" } } }
         },
         "/api/livres/{id}/statut": {
             "patch": {
-                "summary": "Modifier uniquement le statut du livre",
+                "summary": "Changer statut (disponible/emprunte)",
                 "tags": ["Livres"],
                 "security": [{"ApiKeyAuth": []}],
-                "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
                 "requestBody": {
                     "content": { "application/json": { "schema": { "properties": { "statut": { "type": "string" } } } } }
                 },
-                "responses": {
-                    "200": { "description": "Statut mis à jour" }
-                }
+                "responses": { "200": { "description": "Statut mis à jour" } }
             }
         },
         "/api/prets": {
             "post": {
-                "summary": "Ajouter un prêt",
+                "summary": "Créer un prêt",
                 "tags": ["Prêts"],
                 "security": [{"ApiKeyAuth": []}],
-                "responses": { "201": { "description": "Prêt ajouté" } }
+                "requestBody": {
+                    "content": { "application/json": { "schema": { "properties": { "livre_id": { "type": "integer" }, "nom_emprunteur": { "type": "string" }, "date_retour_prevue": { "type": "string" } } } } }
+                },
+                "responses": { "201": { "description": "Prêt créé" } }
             }
         },
         "/api/prets/{id}": {
-            "put": { "summary": "Modifier un prêt", "tags": ["Prêts"], "security": [{"ApiKeyAuth": []}], "responses": { "200": { "description": "Prêt modifié" } } },
-            "delete": { "summary": "Supprimer un prêt", "tags": ["Prêts"], "security": [{"ApiKeyAuth": []}], "responses": { "204": { "description": "Prêt supprimé" } } }
+            "patch": { "summary": "Terminer un prêt", "tags": ["Prêts"], "security": [{"ApiKeyAuth": []}], "responses": { "200": { "description": "Livre retourné" } } },
+            "delete": { "summary": "Supprimer prêt", "tags": ["Prêts"], "security": [{"ApiKeyAuth": []}], "responses": { "204": { "description": "Supprimé" } } }
         }
     }
 };

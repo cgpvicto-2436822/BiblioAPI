@@ -2,134 +2,41 @@
   "openapi": "3.1.0",
   "info": {
     "title": "API de Gestion de Bibliothèque",
-    "summary": "Système de gestion de livres et de prêts pour les bibliothèques",
-    "description": "Cette API permet de gérer le catalogue, les emprunteurs et les clés API.",
-    "contact": {
-      "name": "API Support",
-      "url": "https://www.LouisJesusPrime.com/support",
-      "email": "support@LouisJesusPrime.com"
-    },
-    "version": "1.0.1"
+    "version": "1.0.1",
+    "description": "Documentation JSON de l'API."
   },
   "servers": [
-    {
-      "url": "http://localhost:3000/",
-      "description": "Serveur de développement local"
-    },
-    {
-      "url": "http://api.profs.ca",
-      "description": "Serveur de production (école)"
-    }
+    { "url": "http://localhost:3000/" }
   ],
   "paths": {
     "/api/bibliotheque/inscription": {
       "post": {
-        "summary": "Inscrire une bibliothèque",
         "tags": ["Authentification"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "nom_bibliotheque": { "type": "string", "example": "Bibli de Victo" },
-                  "courriel": { "type": "string", "example": "admin@biblio.ca" },
-                  "mot_de_passe": { "type": "string", "example": "password123" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Inscription réussie" }
-        }
+        "summary": "Inscription",
+        "responses": { "201": { "description": "Créé" } }
+      }
+    },
+    "/api/bibliotheque/cle": {
+      "post": {
+        "tags": ["Authentification"],
+        "summary": "Obtenir clé",
+        "parameters": [{ "in": "query", "name": "nouvelle", "schema": { "type": "boolean" } }],
+        "responses": { "200": { "description": "OK" } }
       }
     },
     "/api/livres": {
-      "get": {
-        "summary": "Liste des livres",
-        "tags": ["Livres"],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "tous",
-            "schema": { "type": "boolean" },
-            "description": "Inclure les livres non disponibles"
-          }
-        ],
-        "responses": {
-          "200": { "description": "Succès" }
-        }
-      },
-      "post": {
-        "summary": "Ajouter un livre",
-        "tags": ["Livres"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "titre": { "type": "string" },
-                  "auteur": { "type": "string" },
-                  "isbn": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Livre créé" }
-        }
-      }
+      "get": { "tags": ["Livres"], "summary": "Liste", "responses": { "200": { "description": "OK" } } },
+      "post": { "tags": ["Livres"], "summary": "Ajout", "responses": { "201": { "description": "OK" } } }
     },
-    "/api/livres/{id}": {
-      "get": {
-        "summary": "Détails d'un livre",
-        "tags": ["Livres"],
-        "parameters": [
-          { "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }
-        ],
-        "responses": {
-          "200": { "description": "Détails récupérés" },
-          "404": { "description": "Livre introuvable" }
-        }
-      },
-      "delete": {
-        "summary": "Supprimer un livre",
-        "tags": ["Livres"],
-        "parameters": [
-          { "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }
-        ],
-        "responses": {
-          "204": { "description": "Supprimé" }
-        }
-      }
+    "/api/livres/{id}/statut": {
+      "patch": { "tags": ["Livres"], "summary": "Statut", "responses": { "200": { "description": "OK" } } }
     },
     "/api/prets": {
-      "post": {
-        "summary": "Enregistrer un prêt",
-        "tags": ["Prêts"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "livre_id": { "type": "integer" },
-                  "nom_emprunteur": { "type": "string" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Prêt enregistré" }
-        }
-      }
+      "post": { "tags": ["Prêts"], "summary": "Nouveau prêt", "responses": { "201": { "description": "OK" } } }
+    },
+    "/api/prets/{id}": {
+      "patch": { "tags": ["Prêts"], "summary": "Terminer prêt", "responses": { "200": { "description": "OK" } } },
+      "delete": { "tags": ["Prêts"], "summary": "Supprimer", "responses": { "204": { "description": "OK" } } }
     }
   }
 }

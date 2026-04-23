@@ -1,7 +1,13 @@
 
 import express from 'express';
 
-import { getLivres, getLivreId, deleteLivre, addLivre } from '../Controlleurs/biblio.controller.js';
+import { getLivres, getLivreId, deleteLivre,
+ addLivre, updateLivre, 
+ updateStatutLivre} from '../Controlleurs/biblio.controller.js';
+
+import { ajoutBiblio, getCleeAPI } from '../Controlleurs/Authentification.controlleur.js';
+
+import { deletePret, createPret, terminerPret } from '../Controlleurs/PretsCont.controlleur.js';
 
 const router = express.Router();
 
@@ -14,17 +20,17 @@ router.get("/livres/:id", getLivreId);
 
 // CRUD
 router.post("/livres", addLivre);
-// router.put("/livres/:id", updateLivre);
-// router.patch("/livres/:id/statut", updateStatutLivre);
+router.put("/livres/:id", updateLivre);
+router.patch("/livres/:id/statut", updateStatutLivre);
 router.delete("/livres/:id", deleteLivre);
 
 // prets
-// router.post("/prets", createPret);
-// router.put("/prets/:id", updatePret);
-// router.delete("/prets/:id", deletePret);
+router.post("/prets", createPret);
+router.put("/prets/:id", terminerPret);
+router.delete("/prets/:id", deletePret);
 
-// users
-// router.post("/bibliotheques", registerBiblio);
-// router.post("/bibliotheques/cle", getApiKey);
+users
+router.post("/bibliotheques", ajoutBiblio);
+router.post("/bibliotheques/cle", getCleeAPI);
 
 export default router;

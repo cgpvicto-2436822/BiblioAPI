@@ -2,15 +2,11 @@ const documentation = {
     "openapi": "3.1.0",
     "info": {
         "title": "API de Gestion de Bibliothèque",
-        "summary": "Service de gestion de prêts et de livres",
-        "description": "Cette API permet de gérer les livres, les prêts et les accès via une clé API unique.",
+        "description": "Système complet de gestion de livres, prêts et authentification.",
         "version": "1.0.0"
     },
     "servers": [
-        {
-            "url": "http://localhost:3000/",
-            "description": "Serveur de développement"
-        }
+        { "url": "http://localhost:3000/", "description": "Serveur local" }
     ],
     "components": {
         "securitySchemes": {
@@ -22,50 +18,45 @@ const documentation = {
         }
     },
     "paths": {
-        "/api/bibliotheque/inscription": {
+        "/api/bibliotheques": {
             "post": {
-                "summary": "Inscrire une bibliothèque",
-                "tags": ["Authentification"],
+                "summary": "Inscription d'une bibliothèque",
+                "tags": ["Users"],
                 "requestBody": {
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "nom_bibliotheque": { "type": "string" },
-                                    "courriel": { "type": "string" },
-                                    "mot_de_passe": { "type": "string" }
+                                    "nom_bibliotheque": { "type": "string", "example": "Biblio de Victo" },
+                                    "courriel": { "type": "string", "example": "admin@biblio.ca" },
+                                    "mot_de_passe": { "type": "string", "example": "secret123" }
                                 }
                             }
                         }
                     }
                 },
-                "responses": { "201": { "description": "Clé API générée" } }
+                "responses": { "201": { "description": "Compte créé" } }
             }
         },
-        "/api/bibliotheque/cle": {
+        "/api/bibliotheques/cle": {
             "post": {
-                "summary": "Récupérer ou régénérer une clé API",
-                "tags": ["Authentification"],
-                "parameters": [
-                    { "in": "query", "name": "nouvelle", "schema": { "type": "boolean" }, "description": "Générer une nouvelle clé si vrai" }
-                ],
+                "summary": "Récupérer la clé API",
+                "tags": ["Users"],
                 "requestBody": {
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "courriel": { "type": "string" },
-                                    "mot_de_passe": { "type": "string" }
+                                    "courriel": { "type": "string", "example": "admin@biblio.ca" },
+                                    "mot_de_passe": { "type": "string", "example": "secret123" }
                                 }
                             }
                         }
                     }
                 },
-                "responses": { "200": { "description": "Clé API retournée" } }
+                "responses": { "200": { "description": "Retourne la clé" } }
             }
         },
         "/api/livres": {
@@ -73,46 +64,53 @@ const documentation = {
                 "summary": "Liste des livres",
                 "tags": ["Livres"],
                 "security": [{"ApiKeyAuth": []}],
-                "parameters": [
-                    { "in": "query", "name": "tous", "schema": { "type": "boolean" } }
-                ],
-                "responses": { "200": { "description": "Succès" } }
+                "parameters": [{ "in": "query", "name": "tous", "schema": { "type": "boolean" } }],
+                "responses": { "200": { "description": "Liste récupérée" } }
             },
             "post": {
                 "summary": "Ajouter un livre",
                 "tags": ["Livres"],
                 "security": [{"ApiKeyAuth": []}],
                 "requestBody": {
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "titre": { "type": "string" },
-                                    "auteur": { "type": "string" },
-                                    "isbn": { "type": "string" },
-                                    "description": { "type": "string" }
+                                    "titre": { "type": "string", "example": "Le Spleen de Paris" },
+                                    "auteur": { "type": "string", "example": "Charles Baudelaire" },
+                                    "isbn": { "type": "string", "example": "9782070322886" },
+                                    "description": { "type": "string", "example": "Poèmes en prose" }
                                 }
                             }
                         }
                     }
                 },
-                "responses": { "201": { "description": "Livre créé" } }
+                "responses": { "201": { "description": "Livre ajouté" } }
             }
         },
         "/api/livres/{id}": {
-            "get": { "summary": "Détails livre", "tags": ["Livres"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "OK" } } },
-            "put": { "summary": "Modifier livre", "tags": ["Livres"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Modifié" } } },
-            "delete": { "summary": "Supprimer livre", "tags": ["Livres"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "204": { "description": "Supprimé" } } }
+            "get": { "summary": "Détails d'un livre", "tags": ["Livres"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Détails" } } },
+            "put": { 
+                "summary": "Modifier un livre (complet)", 
+                "tags": ["Livres"], 
+                "security": [{"ApiKeyAuth": []}],
+                "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
+                "requestBody": {
+                    "content": { "application/json": { "schema": { "type": "object", "properties": { "titre": { "type": "string" }, "auteur": { "type": "string" }, "isbn": { "type": "string" }, "description": { "type": "string" } } } } }
+                },
+                "responses": { "200": { "description": "Modifié" } } 
+            },
+            "delete": { "summary": "Supprimer un livre", "tags": ["Livres"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "204": { "description": "Supprimé" } } }
         },
         "/api/livres/{id}/statut": {
             "patch": {
-                "summary": "Changer statut (disponible/emprunte)",
+                "summary": "Modifier le statut (disponible/emprunte)",
                 "tags": ["Livres"],
                 "security": [{"ApiKeyAuth": []}],
+                "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }],
                 "requestBody": {
-                    "content": { "application/json": { "schema": { "properties": { "statut": { "type": "string" } } } } }
+                    "content": { "application/json": { "schema": { "properties": { "statut": { "type": "string", "example": "emprunte" } } } } }
                 },
                 "responses": { "200": { "description": "Statut mis à jour" } }
             }
@@ -123,14 +121,14 @@ const documentation = {
                 "tags": ["Prêts"],
                 "security": [{"ApiKeyAuth": []}],
                 "requestBody": {
-                    "content": { "application/json": { "schema": { "properties": { "livre_id": { "type": "integer" }, "nom_emprunteur": { "type": "string" }, "date_retour_prevue": { "type": "string" } } } } }
+                    "content": { "application/json": { "schema": { "type": "object", "properties": { "livre_id": { "type": "integer", "example": 1 }, "nom_emprunteur": { "type": "string", "example": "Louis Hince" }, "date_retour_prevue": { "type": "string", "example": "2026-05-10" } } } } }
                 },
-                "responses": { "201": { "description": "Prêt créé" } }
+                "responses": { "201": { "description": "Prêt enregistré" } }
             }
         },
         "/api/prets/{id}": {
-            "patch": { "summary": "Terminer un prêt", "tags": ["Prêts"], "security": [{"ApiKeyAuth": []}], "responses": { "200": { "description": "Livre retourné" } } },
-            "delete": { "summary": "Supprimer prêt", "tags": ["Prêts"], "security": [{"ApiKeyAuth": []}], "responses": { "204": { "description": "Supprimé" } } }
+            "patch": { "summary": "Terminer un prêt", "tags": ["Prêts"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Livre retourné" } } },
+            "delete": { "summary": "Supprimer un prêt", "tags": ["Prêts"], "security": [{"ApiKeyAuth": []}], "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "204": { "description": "Supprimé" } } }
         }
     }
 };

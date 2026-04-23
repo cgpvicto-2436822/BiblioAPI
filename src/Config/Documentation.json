@@ -3,40 +3,63 @@
   "info": {
     "title": "API de Gestion de Bibliothèque",
     "version": "1.0.1",
-    "description": "Documentation JSON de l'API."
+    "description": "Système de gestion complet pour livres et prêts."
   },
-  "servers": [
-    { "url": "http://localhost:3000/" }
-  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": { "type": "apiKey", "in": "header", "name": "X-API-KEY" }
+    }
+  },
   "paths": {
-    "/api/bibliotheque/inscription": {
+    "/api/bibliotheques": {
       "post": {
-        "tags": ["Authentification"],
-        "summary": "Inscription",
+        "tags": ["Users"],
+        "summary": "Ajout bibliothèque",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object", "properties": { "nom_bibliotheque": { "type": "string" }, "courriel": { "type": "string" }, "mot_de_passe": { "type": "string" } } } } }
+        },
         "responses": { "201": { "description": "Créé" } }
       }
     },
-    "/api/bibliotheque/cle": {
+    "/api/bibliotheques/cle": {
       "post": {
-        "tags": ["Authentification"],
-        "summary": "Obtenir clé",
-        "parameters": [{ "in": "query", "name": "nouvelle", "schema": { "type": "boolean" } }],
+        "tags": ["Users"],
+        "summary": "Obtenir clé API",
         "responses": { "200": { "description": "OK" } }
       }
     },
     "/api/livres": {
-      "get": { "tags": ["Livres"], "summary": "Liste", "responses": { "200": { "description": "OK" } } },
-      "post": { "tags": ["Livres"], "summary": "Ajout", "responses": { "201": { "description": "OK" } } }
+      "get": { "tags": ["Livres"], "summary": "Liste livres", "responses": { "200": { "description": "OK" } } },
+      "post": {
+        "tags": ["Livres"],
+        "summary": "Ajouter livre",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object", "properties": { "titre": { "type": "string" }, "auteur": { "type": "string" }, "isbn": { "type": "string" } } } } }
+        },
+        "responses": { "201": { "description": "OK" } }
+      }
+    },
+    "/api/livres/{id}": {
+      "get": { "tags": ["Livres"], "summary": "Détail livre", "parameters": [{ "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "OK" } } },
+      "put": { "tags": ["Livres"], "summary": "Update complet", "responses": { "200": { "description": "OK" } } },
+      "delete": { "tags": ["Livres"], "summary": "Supprimer", "responses": { "204": { "description": "OK" } } }
     },
     "/api/livres/{id}/statut": {
-      "patch": { "tags": ["Livres"], "summary": "Statut", "responses": { "200": { "description": "OK" } } }
+      "patch": { "tags": ["Livres"], "summary": "Update statut", "responses": { "200": { "description": "OK" } } }
     },
     "/api/prets": {
-      "post": { "tags": ["Prêts"], "summary": "Nouveau prêt", "responses": { "201": { "description": "OK" } } }
+      "post": {
+        "tags": ["Prêts"],
+        "summary": "Nouveau prêt",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "object", "properties": { "livre_id": { "type": "integer" }, "nom_emprunteur": { "type": "string" } } } } }
+        },
+        "responses": { "201": { "description": "OK" } }
+      }
     },
     "/api/prets/{id}": {
       "patch": { "tags": ["Prêts"], "summary": "Terminer prêt", "responses": { "200": { "description": "OK" } } },
-      "delete": { "tags": ["Prêts"], "summary": "Supprimer", "responses": { "204": { "description": "OK" } } }
+      "delete": { "tags": ["Prêts"], "summary": "Supprimer prêt", "responses": { "204": { "description": "OK" } } }
     }
   }
 }

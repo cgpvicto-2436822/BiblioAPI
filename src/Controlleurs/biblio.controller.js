@@ -2,25 +2,25 @@
 // import { getLivresFromDb } from '../Models/OperationsBd.js';
 // import {getLivresWithId} from '../Models/OperationsBd.js';
 // import {getLivresListeDb} from '../Models/OperationsBd.js';
-import {getLivresBd} from '../Models/OperationsBd.js';
+import {getLivresBd, getLivreIdBd} from '../Models/OperationsBd.js';
 
-// // TO DO
-// export const getLivre = async (req, res) => {
-//     const id = req.params.id;
+// TO DO
+export const getLivreId = async (req, res) => {
+    const id = req.params.id;
 
-//     if (id >=0)
-//     {
-//         try {
-//             const pokemon = await getLivresWithId(id);
-//             res.status(200).json({pokemon});
-//         } catch (error) {
-//             res.status(500).json({ error: "Erreur lors de la récupération"});
-//         }
-//     }
-//     else{
-//         res.status(500).json({error: "L'id est mauvais, id: " + id + ". L'id doit etre un chiffre positif"})
-//     }
-// };
+    if (id >=0)
+    {
+        try {
+            const livre = await getLivreIdBd(id);
+            res.status(200).json({livre});
+        } catch (error) {
+            res.status(500).json({ error: "Erreur lors de la récupération"});
+        }
+    }
+    else{
+        res.status(500).json({error: "L'id est mauvais, id: " + id + ". L'id doit etre un chiffre positif"})
+    }
+};
 
 // TO DO
 export const getLivres = async (req, res) => {

@@ -1,19 +1,20 @@
 import pool from '../Config/db_pg.js';
 
-// const getPokemonWithId = async (id) => {
-//     const requete = `SELECT nom, type_primaire, type_secondaire, pv, attaque, defense
-//      FROM pokemon
-//       WHERE  = $1`;
-//     const params = [id];
+const getLivreIdBd = async (id) => {
+    const requete = `
+        SELECT * FROM livres 
+        LEFT JOIN prets ON livres.id = prets.livre_id
+        WHERE livres.id = $1`;
+    const params = [id];
 
-//     try {
-//         const resultats = await pool.query(requete, params);
-//         return resultats.rows[0] ?? null;
-//     } catch (erreur) {
-//         console.error(`Erreur PostgreSQL : ${erreur.message}`);
-//         throw erreur;
-//     }
-// };
+    try {
+        const resultats = await pool.query(requete, params);
+        return resultats.rows[0] ?? null;
+    } catch (erreur) {
+        console.error(`Erreur PostgreSQL : ${erreur.message}`);
+        throw erreur;
+    }
+};
 
 // const getPokemonsListeDb = async (page = 1, type = null) => {
 //     const elementsParPage = 25;
@@ -71,7 +72,8 @@ const getLivresBd = async () => {
 };
 
 export{
-    getLivresBd
+    getLivresBd,
+    getLivreIdBd
 };
 
 // export {

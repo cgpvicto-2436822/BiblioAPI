@@ -1,6 +1,6 @@
 // Ce script provient des notes de cours.
 
-import { validationCle } from "../models/utilisateur.model";
+import { validationCle } from "../Models/OperationsBd.js";
 
 const authentification = async (req, res, next) => {
 

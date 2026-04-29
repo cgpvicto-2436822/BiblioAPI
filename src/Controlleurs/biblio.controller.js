@@ -100,7 +100,7 @@ export const addLivre = async (req, res) =>
 export const getLivreId = async (req, res) =>
     {
     const id = req.params.id;
-    const cle = req.headers['authorization']; 
+    const cle = req.headers.authorization.split(' ')[1] 
 
     if (!cle)
         {

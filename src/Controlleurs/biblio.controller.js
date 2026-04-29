@@ -116,12 +116,14 @@ export const updateStatutLivre = async (req, res) => {
     const id = req.params.id;
     const { statut } = req.body;
 
-    if (!statut) {
+    if (!statut)
+    {
         return res.status(400).json({ error: "Le champ 'statut' est requis." });
     }
 
     const statutsPermis = ['disponible', 'emprunte']; //ca ca l'avait été donné dans les consignes
-    if (!statutsPermis.includes(statut)) {
+    if (!statutsPermis.includes(statut))
+    {
         return res.status(400).json({ error: "Statut invalide. Utilisez 'disponible' ou 'emprunte'." });
     }
 

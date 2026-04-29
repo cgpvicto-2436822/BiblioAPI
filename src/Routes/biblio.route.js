@@ -11,7 +11,7 @@ import { deletePret, createPret, terminerPret } from '../Controlleurs/PretsCont.
 
 const router = express.Router();
 
-import authentification from '..middlewares/authentification.middleware';
+import authentification from '..middlewares/authentification.middleware.js';
 
 router.get('/', (req, res) => {
     res.send("<h1>Route de base de l'API de bibliotheque! (Pour la doc, /docs)</h1>");

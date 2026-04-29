@@ -1,5 +1,6 @@
 
-import {getLivresBd, getLivreIdBd,
+import
+{getLivresBd, getLivreIdBd,
      deleteLivreBd, createLivreBd, updateLivreBd, updateStatutLivreBd} from '../Models/OperationsBd.js';
 
 /*
@@ -9,16 +10,21 @@ import {getLivresBd, getLivreIdBd,
     statut 500: erreur recup bd ou mauvais id
     Return: message de reussite
 */
-export const deleteLivre = async (req, res) => {
+export const deleteLivre = async (req, res) =>
+    {
     const id = req.params.id;
-    try {
+    try
+    {
         const succes = await deleteLivreBd(id);
-        if (succes) {
+        if (succes)
+            {
             res.status(200).json({ message: "Livre supprimé!" });
-        } else {
+        } else
+            {
             res.status(404).json({ error: "Livre pas trouvé." });
         }
-    } catch (error) {
+    } catch (error)
+    {
         res.status(500).json({ error: "Erreur lors du delete" });
     }
 };
@@ -30,24 +36,30 @@ export const deleteLivre = async (req, res) => {
     statut 500: erreur recup bd ou mauvais id
     Return: message de reussite
 */
-export const updateLivre = async (req, res) => {
+export const updateLivre = async (req, res) =>
+    {
     const id = req.params.id;
     const nouvellesDonnees = req.body;
-    if (!nouvellesDonnees.titre) {
+    if (!nouvellesDonnees.titre)
+        {
         return res.status(400).json({ error: "Le titre est obligatoire pour la modification." });
     }
 
-    try {
+    try
+    {
         const livreModifie = await updateLivreBd(id, nouvellesDonnees);
-        if (livreModifie) {
+        if (livreModifie)
+            {
             res.status(200).json({ 
                 message: "Livre mis à jour avec succes",
                 livre: livreModifie 
             });
-        } else {
+        } else
+            {
             res.status(404).json({ error: "Livre non trouvé" });
         }
-    } catch (error) {
+    } catch (error)
+    {
         res.status(500).json({ error: "Erreur lors de la mise à jour du livre" });
     }
 };
@@ -60,16 +72,21 @@ export const updateLivre = async (req, res) => {
     statut 400: mauvais params du body
     Return: le livre
 */
-export const addLivre = async (req, res) => {
-    const { titre, auteur, biblio_id } = req.body;
-    if (!titre || !biblio_id) {
+export const addLivre = async (req, res) =>
+    {
+    const
+    { titre, auteur, biblio_id } = req.body;
+    if (!titre || !biblio_id)
+        {
         return res.status(400).json({ error: "Le titre et le biblio_id sont requis" });
     }
 
-    try {
+    try
+    {
         const nouveauLivre = await createLivreBd(req.body);
         res.status(201).json(nouveauLivre);
-    } catch (error) {
+    } catch (error)
+    {
         res.status(500).json({ error: "Erreur lors de l'ajout du livre" });
     }
 };
@@ -80,20 +97,36 @@ export const addLivre = async (req, res) => {
     statut 500: erreur recup bd ou mauvais id
     Return: le livre
 */
-export const getLivreId = async (req, res) => {
-    const id = req.params.id;
-    const cle = req.headers[Authorization];
-    if (id >=0)
+export const getLivreId = async (req, res) =>
     {
-        try {
-            const livre = await getLivreIdBd(id, cle);
-            res.status(200).json({livre});
-        } catch (error) {
-            res.status(500).json({ error: "Erreur lors de la récupération"});
-        }
+    const id = req.params.id;
+    const cle = req.headers['authorization']; 
+
+    if (!cle)
+        {
+        return res.status(401).json({ error: "Clé API manquante dans le header Authorization" });
     }
-    else{
-        res.status(500).json({error: "L'id est mauvais, id: " + id + ". L'id doit etre un chiffre positif"})
+
+    if (id >= 0)
+        {
+        try
+        {
+            const livre = await getLivreIdBd(id, cle);
+            
+            // Si le livre n'existe pas pour cette clé, on renvoie 404
+            if (!livre)
+                {
+                return res.status(404).json({ error: "Livre introuvable pour cette bibliothèque" });
+            }
+
+            res.status(200).json(livre);
+        } catch (error)
+        {
+            res.status(500).json({ error: "Erreur lors de la récupération" });
+        }
+    } else
+        {
+        res.status(400).json({ error: `L'id ${id} est invalide. Il doit être positif.` });
     }
 };
 
@@ -103,43 +136,54 @@ export const getLivreId = async (req, res) => {
     statut 500: erreur recup bd
     Return: les livres
 */
-export const getLivres = async (req, res) => {
+export const getLivres = async (req, res) =>
+    {
     const afficherTout = req.query.tous === 'true';
-    try {
+    try
+    {
         const livres = await getLivresBd(afficherTout);
         res.status(200).json({ livres });
-    } catch (error) {
+    } catch (error)
+    {
         res.status(500).json({ error: "Erreur lors de la récupération" });
     }
 };
 
-export const updateStatutLivre = async (req, res) => {
+export const updateStatutLivre = async (req, res) =>
+    {
     const id = req.params.id;
-    const { statut } = req.body;
+    const
+    { statut } = req.body;
 
     if (!statut)
-    {
+
+        {
         return res.status(400).json({ error: "Le champ 'statut' est requis." });
     }
 
     const statutsPermis = ['disponible', 'emprunte']; //ca ca l'avait été donné dans les consignes
     if (!statutsPermis.includes(statut))
-    {
+
+        {
         return res.status(400).json({ error: "Statut invalide. Utilisez 'disponible' ou 'emprunte'." });
     }
 
-    try {
+    try
+    {
         const livreModifie = await updateStatutLivreBd(id, statut);
         
-        if (livreModifie) {
+        if (livreModifie)
+            {
             res.status(200).json({ 
                 message: "Statut mis a jour", 
                 livre: livreModifie 
             });
-        } else {
+        } else
+            {
             res.status(404).json({ error: "Livre non trouvé" });
         }
-    } catch (error) {
+    } catch (error)
+    {
         res.status(500).json({ error: "Erreur lors de la modification du statut" });
     }
 };

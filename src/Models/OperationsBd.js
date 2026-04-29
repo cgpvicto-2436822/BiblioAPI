@@ -144,15 +144,8 @@ const updateCleApiBd = async (courriel, nouvelleCle) => {
 
 const validationCle = async (cleApi) => {
     const requete = `SELECT id FROM bibliotheques WHERE cle_api = $1`;
-    const resultat = await pool.query(requete, cleApi);
-    if(resultat == null)
-    {
-        return false;
-    }
-    else{
-        return true;
-    }
-
+    const resultat = await pool.query(requete, [cleApi]);
+    return resultat.rowCount > 0;
 };
 
 export{

@@ -11,23 +11,25 @@ import { deletePret, createPret, terminerPret } from '../Controlleurs/PretsCont.
 
 const router = express.Router();
 
+import authentification from './src/middlewares/authentification.middleware';
+
 router.get('/', (req, res) => {
     res.send("<h1>Route de base de l'API de bibliotheque! (Pour la doc, /docs)</h1>");
 });
 
-router.get("/livres", getLivres);
-router.get("/livres/:id", getLivreId);
+router.get("/livres", authentification, getLivres);
+router.get("/livres/:id", authentification, getLivreId);
 
 // CRUD
-router.post("/livres", addLivre);
-router.put("/livres/:id", updateLivre);
-router.patch("/livres/:id/statut", updateStatutLivre);
-router.delete("/livres/:id", deleteLivre);
+router.post("/livres", authentification, addLivre);
+router.put("/livres/:id", authentification, updateLivre);
+router.patch("/livres/:id/statut", authentification, updateStatutLivre);
+router.delete("/livres/:id", authentification, deleteLivre);
 
 // prets
-router.post("/prets", createPret);
-router.patch("/prets/:id", terminerPret);
-router.delete("/prets/:id", deletePret);
+router.post("/prets", authentification, createPret);
+router.patch("/prets/:id", authentification,terminerPret);
+router.delete("/prets/:id", authentification,deletePret);
 
 // users
 router.post("/bibliotheques", ajoutBiblio);

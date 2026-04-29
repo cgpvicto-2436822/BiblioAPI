@@ -142,6 +142,19 @@ const updateCleApiBd = async (courriel, nouvelleCle) => {
     return resultats.rows[0];
 };
 
+const validationCle = async (cleApi) => {
+    const requete = `SELECT id FROM bibliotheques WHERE cle_api = $1`;
+    const resultat = await pool.query(requete, cleApi);
+    if(resultat == null)
+    {
+        return false;
+    }
+    else{
+        return true;
+    }
+
+};
+
 export{
     getLivresBd,
     getLivreIdBd,
@@ -155,5 +168,6 @@ export{
     createBiblioBd,
     updateCleApiBd,
     getCleApiBd,
-    terminerPretBd
+    terminerPretBd,
+    validationCle
 };

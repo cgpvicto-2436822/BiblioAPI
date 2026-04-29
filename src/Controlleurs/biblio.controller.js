@@ -82,10 +82,11 @@ export const addLivre = async (req, res) => {
 */
 export const getLivreId = async (req, res) => {
     const id = req.params.id;
+    const cle = req.headers[Authorization];
     if (id >=0)
     {
         try {
-            const livre = await getLivreIdBd(id);
+            const livre = await getLivreIdBd(id, cle);
             res.status(200).json({livre});
         } catch (error) {
             res.status(500).json({ error: "Erreur lors de la récupération"});

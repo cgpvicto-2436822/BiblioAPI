@@ -10,12 +10,13 @@ const deleteLivreBd = async (id) => {
     }
 };
 
-const getLivreIdBd = async (id) => {
+const getLivreIdBd = async (id, cle) => {
     const requete = `
         SELECT * FROM livres 
         LEFT JOIN prets ON livres.id = prets.livre_id
-        WHERE livres.id = $1`;
-    const params = [id];
+        INNER JOIN bibliotheques on livres.biblio_id = bibliotheques.id
+        WHERE livres.id = $1 AND bibliotheques.cle_api = $2`;
+    const params = [id, cle];
 
     try {
         const resultats = await pool.query(requete, params);

@@ -1,18 +1,24 @@
 import pool from '../Config/db_pg.js';
 
-const deleteLivreBd = async (id) => {
-    const requete = `DELETE FROM livres WHERE id = $1 RETURNING *;`;
+const deleteLivreBd = async (id, cle) => {
+    const requete = `
+        DELETE FROM livres 
+        WHERE id = $1 
+        AND biblio_id = (SELECT id FROM bibliotheques WHERE cle_api = $2)
+        RETURNING *;`;
+    
     try {
-        const resultat = await pool.query(requete, [id]);
-        return resultat.rowCount > 0; //bool
+        const resultat = await pool.query(requete, [id, cle]);
+        return resultat.rowCount > 0;
     } catch (erreur) {
+        console.error(`Erreur suppression : ${erreur.message}`);
         throw erreur;
     }
 };
 
 const getLivreIdBd = async (id, cle) => {
     const requete = `
-        SELECT * FROM livres 
+        SELECT livres.titre, livres.auteur, livres.isbn, livres.statut, livres.date_ajout FROM livres 
         LEFT JOIN prets ON livres.id = prets.livre_id
         INNER JOIN bibliotheques on livres.biblio_id = bibliotheques.id
         WHERE livres.id = $1 AND bibliotheques.cle_api = $2`;

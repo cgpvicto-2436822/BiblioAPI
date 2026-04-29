@@ -13,9 +13,15 @@ import
 export const deleteLivre = async (req, res) =>
     {
     const id = req.params.id;
+    const cle = req.headers.authorization.split(' ')[1] ;
+
+    if (!cle)
+    {
+        return res.status(401).json({ error: "Clé API manquante dans le header Authorization" });
+    }
     try
     {
-        const succes = await deleteLivreBd(id);
+        const succes = await deleteLivreBd(id, cle);
         if (succes)
             {
             res.status(200).json({ message: "Livre supprimé!" });
@@ -100,7 +106,7 @@ export const addLivre = async (req, res) =>
 export const getLivreId = async (req, res) =>
     {
     const id = req.params.id;
-    const cle = req.headers.authorization.split(' ')[1] 
+    const cle = req.headers.authorization.split(' ')[1] ;
 
     if (!cle)
         {

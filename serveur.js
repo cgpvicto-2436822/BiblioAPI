@@ -4,7 +4,6 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
 import cors from 'cors';
-app.use(cors());
 
 const swaggerDocument = JSON.parse(fs.readFileSync('./src/Config/Documentation.json', 'utf8'));
 const swaggerOptions = {
@@ -12,9 +11,9 @@ const swaggerOptions = {
     customSiteTitle: "Documentation API Biblio"
 };
 
-// Créer une application express
 const app = express();
 app.use(express.json());
+app.use(cors());
 const PORT = 3000;
 
 import router from './src/Routes/biblio.route.js';

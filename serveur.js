@@ -3,6 +3,9 @@
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import fs from 'fs';
+import cors from 'cors';
+app.use(cors());
+
 const swaggerDocument = JSON.parse(fs.readFileSync('./src/Config/Documentation.json', 'utf8'));
 const swaggerOptions = {
     customCss: '.swagger-ui .topbar { display: none }',
